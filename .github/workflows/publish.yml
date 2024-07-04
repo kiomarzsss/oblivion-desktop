@@ -24,7 +24,7 @@ jobs:
                   sed 's|RELEASE_TAG|${{ github.ref_name }}|g' ./.github/release_message.md >> release.md
 
             - name: Set Release Message
-              uses: softprops/action-gh-release@v1
+              uses: softprops/action-gh-release@v2
               env:
                   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
               with:
@@ -81,3 +81,4 @@ jobs:
                       oblivion-desktop-win.exe
                       oblivion-desktop-mac-arm64.zip.blockmap
                       oblivion-desktop-mac-x64.zip.blockmap
+                      latest-mac.yml 
