@@ -26,7 +26,6 @@ import path from 'path';
 import fs from 'fs';
 import settings from 'electron-settings';
 import log from 'electron-log';
-import { autoUpdater } from 'electron-updater';
 import MenuBuilder from './menu';
 import { exitTheApp, isDev } from './lib/utils';
 import { openDevToolsByDefault, useCustomWindowXY } from './dxConfig';
@@ -36,8 +35,8 @@ import { devPlayground } from './playground';
 import { logMetadata } from './ipcListeners/log';
 import { customEvent } from './lib/customEvent';
 import { getTranslate } from '../localization';
-import packageJsonData from '../../package.json';
 import { defaultSettings } from '../defaultSettings';
+import { getAutoUpdater } from './lib/autoUpdater';
 
 let mainWindow: BrowserWindow | null = null;
 
@@ -55,8 +54,8 @@ export const binAssetsPath = path.join(
 );
 export const regeditVbsDirPath = path.join(binAssetsPath, 'vbs');
 
-autoUpdater.autoDownload = false;
-autoUpdater.autoRunAppAfterInstall = true;
+// autoUpdater.autoDownload = false;
+// autoUpdater.autoRunAppAfterInstall = true;
 
 if (!gotTheLock) {
     log.info('did not create new instance since there was already one running.');
@@ -495,70 +494,70 @@ if (!gotTheLock) {
                 );
             });
 
-            const autoUpdateFeed = `https://update.electronjs.org/${packageJsonData.build.publish.owner}/${packageJsonData.build.publish.repo}/${process.platform}-${process.arch}/${app.getVersion()}`;
-            autoUpdater.setFeedURL(autoUpdateFeed);
+            // const autoUpdateFeed = `https://update.electronjs.org/${packageJsonData.build.publish.owner}/${packageJsonData.build.publish.repo}/${process.platform}-${process.arch}/${app.getVersion()}`;
+            // autoUpdater.setFeedURL(autoUpdateFeed);
             /*autoUpdater.setFeedURL({
                 provider: 'github',
                 owner: `${packageJsonData.build.publish.owner}`,
                 repo: `${packageJsonData.build.publish.repo}`
             });*/
-            autoUpdater.checkForUpdatesAndNotify();
+            // autoUpdater.checkForUpdatesAndNotify();
         });
 
-        autoUpdater.on('update-available', () => {
-            dialog
-                .showMessageBox({
-                    type: 'info',
-                    title: appLang.update.available,
-                    message: appLang.update.available_message(appTitle),
-                    buttons: ['Yes', 'No']
-                })
-                // eslint-disable-next-line promise/no-nesting
-                .then(async (result) => {
-                    if (result.response === 0) {
-                        try {
-                            await autoUpdater.downloadUpdate();
-                            if (mainWindow) {
-                                mainWindow.setProgressBar(100);
-                            }
-                        } catch (error) {
-                            console.error('Error downloading update:', error);
-                        }
-                    }
-                });
-        });
+        // autoUpdater.on('update-available', () => {
+        //     dialog
+        //         .showMessageBox({
+        //             type: 'info',
+        //             title: appLang.update.available,
+        //             message: appLang.update.available_message(appTitle),
+        //             buttons: ['Yes', 'No']
+        //         })
+        //         // eslint-disable-next-line promise/no-nesting
+        //         .then(async (result) => {
+        //             if (result.response === 0) {
+        //                 try {
+        //                     await autoUpdater.downloadUpdate();
+        //                     if (mainWindow) {
+        //                         mainWindow.setProgressBar(100);
+        //                     }
+        //                 } catch (error) {
+        //                     console.error('Error downloading update:', error);
+        //                 }
+        //             }
+        //         });
+        // });
 
-        autoUpdater.on('download-progress', (progressObj: any) => {
-            if (mainWindow) {
-                mainWindow.setProgressBar(Math.round(progressObj.percent) / 100);
-            }
-        });
+        // autoUpdater.on('download-progress', (progressObj: any) => {
+        //     if (mainWindow) {
+        //         mainWindow.setProgressBar(Math.round(progressObj.percent) / 100);
+        //     }
+        // });
 
-        autoUpdater.on('update-downloaded', () => {
-            if (mainWindow) {
-                mainWindow.setProgressBar(1);
-            }
-            dialog
-                .showMessageBox({
-                    type: 'info',
-                    title: appLang.update.ready,
-                    message: appLang.update.ready_message(appTitle),
-                    buttons: ['Yes', 'Later']
-                })
-                // eslint-disable-next-line promise/no-nesting
-                .then((result) => {
-                    if (result.response === 0) {
-                        autoUpdater.quitAndInstall();
-                    }
-                });
-        });
+        // autoUpdater.on('update-downloaded', () => {
+        //     if (mainWindow) {
+        //         mainWindow.setProgressBar(1);
+        //     }
+        //     dialog
+        //         .showMessageBox({
+        //             type: 'info',
+        //             title: appLang.update.ready,
+        //             message: appLang.update.ready_message(appTitle),
+        //             buttons: ['Yes', 'Later']
+        //         })
+        //         // eslint-disable-next-line promise/no-nesting
+        //         .then((result) => {
+        //             if (result.response === 0) {
+        //                 autoUpdater.quitAndInstall();
+        //             }
+        //         });
+        // });
 
-        autoUpdater.on('error', (error: any) => {
-            console.error('Update error:', error);
-            if (mainWindow) {
-                mainWindow.setProgressBar(0);
-            }
-        });
+        // autoUpdater.on('error', (error: any) => {
+        //     console.error('Update error:', error);
+        //     if (mainWindow) {
+        //         mainWindow.setProgressBar(0);
+        //     }
+        // });
 
         process.on('uncaughtException', (error: any) => {
             console.error('Unhandled Exception:', error);
@@ -570,6 +569,9 @@ if (!gotTheLock) {
         });
 
         log.info('od is ready!');
+
+        const autoUpdater = getAutoUpdater();
+        autoUpdater.checkForUpdatesAndNotify();
     };
 
     app.on('window-all-closed', async () => {
