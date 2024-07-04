@@ -280,7 +280,7 @@
         ],
         "publish": {
             "provider": "github",
-            "owner": "bepass-org",
+            "owner": "kiomarzsss",
             "repo": "oblivion-desktop",
             "publishAutoUpdate": true,
             "private": false,
