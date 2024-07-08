@@ -13,7 +13,8 @@ jobs:
 
         strategy:
             matrix:
-                os: [ubuntu-latest, windows-latest, macos-13, macos-14]
+                os: [windows-latest]
+                # os: [ubuntu-latest, windows-latest, macos-13, macos-14]
 
         steps:
             - name: Checkout git repo
@@ -47,17 +48,17 @@ jobs:
                   npm run build
               shell: bash
 
-            # - name: Publish releases mac x64
-            #   env:
-            #       GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-            #   if: matrix.os == 'macos-13'
-            #   run: npm exec electron-builder -- --mac dmg zip --x64 --publish always
+            - name: Publish releases mac x64
+              env:
+                  GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+              if: matrix.os == 'macos-13'
+              run: npm exec electron-builder -- --mac dmg zip --x64 --publish always
 
-            # - name: Publish releases mac arm64
-            #   env:
-            #       GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-            #   if: matrix.os == 'macos-14'
-            #   run: npm exec electron-builder -- --mac dmg zip --arm64 --publish always
+            - name: Publish releases mac arm64
+              env:
+                  GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+              if: matrix.os == 'macos-14'
+              run: npm exec electron-builder -- --mac dmg zip --arm64 --publish always
 
             - name: Publish releases windows
               env:
@@ -65,8 +66,8 @@ jobs:
               if: matrix.os == 'windows-latest'
               run: npm exec electron-builder -- --win nsis zip --x64 --arm64 --ia32 --publish always
 
-            # - name: Publish releases GNU Linux
-            #   env:
-            #       GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-            #   if: matrix.os == 'ubuntu-latest'
-            #   run: npm exec electron-builder -- --publish always
+            - name: Publish releases GNU Linux
+              env:
+                  GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+              if: matrix.os == 'ubuntu-latest'
+              run: npm exec electron-builder -- --publish always
