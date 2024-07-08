@@ -63,7 +63,7 @@ jobs:
               env:
                   GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
               if: matrix.os == 'windows-latest'
-              run: npm exec electron-builder -- --publish always
+              run: npm exec electron-builder -- --win nsis zip --x64 --arm64 --ia32 --publish always
 
             - name: Publish releases GNU Linux
               env:
