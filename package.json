@@ -239,8 +239,7 @@
         },
         "nsis": {
             "oneClick": false,
-            "allowToChangeInstallationDirectory": true,
-            "differentialPackage": false
+            "allowToChangeInstallationDirectory": true
         },
         "linux": {
             "target": [
