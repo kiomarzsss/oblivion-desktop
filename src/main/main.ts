@@ -26,6 +26,7 @@ import path from 'path';
 import fs from 'fs';
 import settings from 'electron-settings';
 import log from 'electron-log';
+import { autoUpdater } from 'electron-updater';
 import MenuBuilder from './menu';
 import { exitTheApp, isDev } from './lib/utils';
 import { openDevToolsByDefault, useCustomWindowXY } from './dxConfig';
@@ -36,7 +37,6 @@ import { logMetadata } from './ipcListeners/log';
 import { customEvent } from './lib/customEvent';
 import { getTranslate } from '../localization';
 import { defaultSettings } from '../defaultSettings';
-import { getAutoUpdater } from './lib/autoUpdater';
 
 let mainWindow: BrowserWindow | null = null;
 
@@ -570,7 +570,6 @@ if (!gotTheLock) {
 
         log.info('od is ready!');
 
-        const autoUpdater = getAutoUpdater();
         autoUpdater.checkForUpdatesAndNotify();
     };
 
