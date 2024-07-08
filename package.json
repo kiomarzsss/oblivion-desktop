@@ -214,9 +214,6 @@
             ],
             "identity": null
         },
-        "dmg": {
-            "writeUpdateInfo": true
-        },
         "win": {
             "target": [
                 {
